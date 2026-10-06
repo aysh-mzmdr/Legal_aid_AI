@@ -1,6 +1,5 @@
-export default function App(){
+import ChatPage from './components/ChatPage/ChatPage.jsx'
 
-  return(
-    <h1>Hello</h1>
-  )
+export default function App() {
+  return <ChatPage />
 }

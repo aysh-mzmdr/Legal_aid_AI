@@ -1,0 +1,52 @@
+.wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 8px 8px 8px 22px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: border-color 0.2s;
+}
+
+.wrap:focus-within {
+  border-color: var(--accent-deep);
+}
+
+.input {
+  flex: 1;
+  min-height: 24px;
+  max-height: 120px;
+  margin: 8px 0;
+  padding: 0;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.input::placeholder {
+  color: var(--text-dim);
+}
+
+.send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #151515;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.send:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

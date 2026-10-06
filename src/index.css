@@ -1,0 +1,43 @@
+:root {
+  --bg: #121212;
+  --surface: #1c1c1c;
+  --card: #262626;
+  --border: #303030;
+  --accent: #6fb896;
+  --accent-deep: #3e6b57;
+  --cream: #f2efe6;
+  --text: #f2f2f2;
+  --text-muted: #9e9e9e;
+  --text-dim: #6b6b6b;
+  --radius-xl: 28px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --font: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+textarea {
+  font-family: inherit;
+}
