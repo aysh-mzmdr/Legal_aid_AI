@@ -24,7 +24,7 @@ export default function ChatInput({ onSend, disabled }) {
         className={styles.input}
         rows={1}
         value={value}
-        placeholder="Describe your legal question..."
+        placeholder="Having a query?"
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         aria-label="Message"

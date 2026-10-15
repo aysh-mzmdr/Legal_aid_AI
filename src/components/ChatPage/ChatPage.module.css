@@ -71,12 +71,6 @@
   line-height: 1.15;
 }
 
-.subtitle {
-  margin: 0;
-  font-size: 15px;
-  color: var(--text-muted);
-}
-
 .footer {
   position: relative;
   width: 100%;

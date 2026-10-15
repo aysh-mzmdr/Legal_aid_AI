@@ -145,9 +145,8 @@ export default function ChatPage() {
               {showSuggestions && (
                 <div className={styles.hero}>
                   <h1 className={styles.title}>
-                    Ask your <span className={styles.accentWord}>legal</span> question
+                    Here for your <span className={styles.accentWord}>legal</span> queries
                   </h1>
-                  <p className={styles.subtitle}>Clear, calm guidance on your rights, in plain language.</p>
                 </div>
               )}
 
