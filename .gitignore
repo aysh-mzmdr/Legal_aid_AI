@@ -26,3 +26,8 @@ dist-ssr
 Raw Data
 CLAUDE.md
 .venv
+abc.txt
+data
+
+__pycache__/
+*.pyc
