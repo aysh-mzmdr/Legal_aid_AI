@@ -1,0 +1,61 @@
+.rich {
+  white-space: normal;
+}
+
+.rich > p {
+  margin: 0 0 10px;
+}
+
+.rich > :last-child {
+  margin-bottom: 0;
+}
+
+.heading {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.rich strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.list {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+
+.list li {
+  margin: 4px 0;
+}
+
+.list li::marker {
+  color: var(--text-dim);
+}
+
+/* Inline passage citation: a small numbered pill, like a footnote mark. */
+.cite {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin: 0 2px;
+  padding: 0 5px;
+  border: 1px solid var(--accent-deep);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: 2px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cite:hover,
+.cite:focus-visible {
+  background: var(--accent-deep);
+  color: var(--text);
+  outline: none;
+}

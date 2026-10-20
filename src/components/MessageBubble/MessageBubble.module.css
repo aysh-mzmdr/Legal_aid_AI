@@ -20,8 +20,19 @@
   color: var(--text);
 }
 
-.bubble {
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
   max-width: min(640px, 82%);
+}
+
+.user .content {
+  align-items: flex-end;
+}
+
+.bubble {
   padding: 12px 18px;
   border-radius: var(--radius-md);
   background: var(--card);
@@ -37,4 +48,146 @@
   background: var(--cream);
   border-color: var(--cream);
   color: #151515;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+}
+
+.dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dots span {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+.error {
+  margin: 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.bubble > .error:not(:first-child) {
+  margin-top: 10px;
+}
+
+.sectionLabel {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.sources,
+.followups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sourceList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Tertiary CTA: transparent outline pill, accent only on the number tile. */
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.source:hover,
+.source:focus-visible {
+  border-color: var(--accent-deep);
+  background: var(--card);
+  outline: none;
+}
+
+.source svg {
+  color: var(--text-dim);
+}
+
+.sourceNum {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-deep);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.followup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.followup svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.followup:hover,
+.followup:focus-visible {
+  color: var(--text);
+  border-color: var(--text-dim);
+  outline: none;
 }

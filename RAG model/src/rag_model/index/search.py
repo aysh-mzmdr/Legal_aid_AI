@@ -9,15 +9,15 @@ from __future__ import annotations
 import json
 import re
 import sys
+import threading
 from dataclasses import dataclass
 
-import chromadb
 import numpy as np
-from rank_bm25 import BM25Okapi
 
+from .common import (COLLECTION, MANIFEST_PATH, MODEL_NAME, QUERY_PROMPT, build_bm25, chroma_client,
+                     chunks_digest, load_bm25, load_chunks, load_model, tokenize)
+from ..config import settings
 from ..retrieval.expand import expand, explain
-from .common import (CHROMA_DIR, COLLECTION, MANIFEST_PATH, QUERY_PROMPT, chunks_digest, document_text,
-                     load_chunks, load_model, tokenize)
 
 RRF_K = 60  # standard constant for reciprocal rank fusion
 ARTICLE_REF = re.compile(r"\barticles?\s+(\d+(?:-?[A-Za-z]{1,3})?)\b", re.I)
@@ -37,21 +37,35 @@ class HybridSearcher:
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8")) if MANIFEST_PATH.exists() else None
         if manifest is None:
             raise RuntimeError("No index found. Run `uv run rag-ingest` and then `uv run rag-index`.")
-        if manifest["chunks_sha256"] != chunks_digest():
+        digest = chunks_digest()
+        if manifest["chunks_sha256"] != digest:
             print("warning: chunks.jsonl changed since the index was built; run `uv run rag-index`.",
                   file=sys.stderr)
+        for key, now in (("model", MODEL_NAME), ("query_prompt", QUERY_PROMPT)):
+            if manifest.get(key) != now:
+                print(f"warning: config.toml [embedding] {key} differs from the one the index was built "
+                      f"with ({manifest.get(key)!r}); run `uv run rag-index`.", file=sys.stderr)
         self.chunks = {c["id"]: c for c in load_chunks()}
-        self.model = load_model()
-        self.collection = chromadb.PersistentClient(path=str(CHROMA_DIR)).get_collection(COLLECTION)
+        self.model = load_model(device=settings().embedding.query_device)
+        # embedding_function=None: we embed queries ourselves; Chroma's default would download
+        # an ONNX model the first time it was used.
+        self.collection = chroma_client().get_collection(COLLECTION, embedding_function=None)
 
         stored = self.collection.get(include=["embeddings"])
         self.ids: list[str] = stored["ids"]
         self.row = {cid: i for i, cid in enumerate(self.ids)}
         self.embeddings = np.asarray(stored["embeddings"], dtype=np.float32)
 
-        self.bm25_ids = list(self.chunks)
-        self.bm25 = BM25Okapi([tokenize(document_text(self.chunks[i])) for i in self.bm25_ids])
+        stored_bm25 = load_bm25(digest)
+        if stored_bm25 is None:
+            print("warning: no BM25 index for the current chunks.jsonl; building one in memory. "
+                  "Run `uv run rag-index --bm25-only` to store it.", file=sys.stderr)
+            stored_bm25 = build_bm25(list(self.chunks.values()))
+        self.bm25_ids, self.bm25 = stored_bm25
 
+        # The embedding model and last_explanation are shared; the web server calls retrieve()
+        # from several threads.
+        self._lock = threading.Lock()
         self.by_article: dict[str, list[str]] = {}
         for c in self.chunks.values():
             if c["kind"] == "article":
@@ -92,24 +106,31 @@ class HybridSearcher:
                 h.dense = float(self.embeddings[self.row[h.id]] @ q)
         return ranked, q
 
-    def retrieve(self, query: str, seeds: int = 5, min_seed_score: float = 0.3, **expand_options) -> list[dict]:
+    def retrieve(self, query: str) -> list[dict]:
         """Top hybrid hits, widened along cross-references that are relevant to the query.
 
-        Hits scoring under `min_seed_score` of the best hit are not used as seeds. Relevance of
-        a referenced chunk is its cosine similarity to the query relative to the best seed's,
-        so the threshold in expand() means "about as on-topic as the seeds".
+        Settings come from config.toml [retrieval]. Hits scoring under `min_seed_score` of the
+        best hit are not used as seeds. Relevance of a referenced chunk is its cosine similarity
+        to the query relative to the best seed's, so `threshold` means "about as on-topic as the
+        seeds".
         """
-        hits, q = self.search(query, k=seeds)
+        with self._lock:
+            return self._retrieve(query)
+
+    def _retrieve(self, query: str) -> list[dict]:
+        cfg = settings().retrieval
+        hits, q = self.search(query, k=cfg.seeds)
         if not hits:
             return []
         best = hits[0].score
-        hits = [h for h in hits if h.score >= min_seed_score * best]
+        hits = [h for h in hits if h.score >= cfg.min_seed_score * best]
         top_sim = max(h.dense for h in hits) or 1.0
 
         def relevance(cid: str) -> float:
             return float(self.embeddings[self.row[cid]] @ q) / top_sim
 
-        selected = expand([(h.id, h.score) for h in hits], self.chunks, relevance, **expand_options)
+        selected = expand([(h.id, h.score) for h in hits], self.chunks, relevance, threshold=cfg.threshold,
+                          max_chunks=cfg.max_chunks, max_chars=cfg.max_chars)
         self.last_explanation = explain(selected, self.chunks)
         return [{"id": s.id, "score": round(s.score, 3), "depth": s.depth, "via": s.via, "edge": s.edge,
                  "header": self.chunks[s.id]["header"], "text": self.chunks[s.id]["text"]} for s in selected]

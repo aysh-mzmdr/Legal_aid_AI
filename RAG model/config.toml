@@ -1,0 +1,72 @@
+# Settings for the Legal Aid RAG pipeline.
+#
+# Any value can be overridden for one run with an environment variable named
+# RAG_<SECTION>_<KEY>, e.g.  RAG_LLM_MODEL=gemini-3.1-pro-preview  or  RAG_EMBEDDING_QUERY_DEVICE=cpu
+# Use RAG_CONFIG=path\to\other.toml to load a different file.
+
+[llm]
+# "gemini" (Google Gemini API), "ollama" (local), or "openai" (any OpenAI-compatible server:
+# llama.cpp server, LM Studio, vLLM).
+provider = "gemini"
+model = "gemini-3.8-flash"
+# Tried in order when the model above stays busy or rate-limited after its retries
+# (Gemini returns 503 "high demand" at peak times). [] to disable.
+fallback_models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"]
+base_url = "https://generativelanguage.googleapis.com/v1beta"
+# Name of the environment variable holding the API key. Put the key in that variable or in
+# a .env file (gitignored) in "RAG model" or the repository root, as  GEMINI_API_KEY=...
+# Never put the key in this file.
+api_key_env = "GEMINI_API_KEY"
+# Gemini runs on Google's servers: every question and the retrieved Constitution passages are
+# sent to Google. Embeddings and search stay on this machine. Must be true for "gemini";
+# set false (with a local provider) to guarantee nothing leaves the machine.
+allow_remote = true
+temperature = 0.2
+top_p = 0.9
+# Longest answer, in tokens. On Gemini this also covers thinking tokens, so raise it if you
+# turn thinking on.
+max_tokens = 1024
+# Hidden reasoning before answering: 0 = off, -1 = the model's default, N = up to N tokens.
+# Some models (e.g. Gemini Pro) cannot turn it off.
+thinking_budget = 0
+timeout_seconds = 120
+# Retries per model, with 1 s / 2 s / 4 s waits, when the server is busy or rate-limiting
+# (429, 5xx), before moving to the next fallback model. Kept low because each busy model in the
+# chain adds its retries to the wait before the first word appears.
+max_retries = 1
+# Ollama only: context window (num_ctx) and how long the model stays loaded.
+context_window = 8192
+keep_alive = "30m"
+
+[embedding]
+# Changing the model, max_seq_length or query_instruction needs `uv run rag-index` again.
+model = "Qwen/Qwen3-Embedding-0.6B"
+# Device for building the index (`rag-index`): "auto" (GPU when available), "cuda" or "cpu".
+device = "auto"
+# Device for embedding questions at search time. Use "cpu" only if a local LLM needs the GPU.
+query_device = "auto"
+# Precision on the GPU: "float16" halves VRAM compared with "float32".
+dtype = "float16"
+# Precision on the CPU: "float32", or "bfloat16" to halve RAM (vectors match: cosine 0.999).
+query_dtype = "float32"
+max_seq_length = 1024
+query_instruction = "Given a question about legal rights or the law in India, retrieve the provisions of the Constitution of India that answer it"
+
+[retrieval]
+# Hybrid-search hits used as starting points.
+seeds = 5
+# Ignore hits scoring under this fraction of the best hit.
+min_seed_score = 0.3
+# Follow a cross-reference only while (parent score x edge weight x relevance) stays above this.
+threshold = 0.25
+max_chunks = 12
+# Total passage text sent to the LLM, in characters (~4 characters per token).
+max_chars = 18000
+
+[server]
+# `uv run rag-serve`. 127.0.0.1 = reachable from this machine only.
+host = "127.0.0.1"
+port = 8000
+# Web app origins allowed to call the API (CORS): Vite's dev server by default.
+cors_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+max_question_chars = 2000

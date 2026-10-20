@@ -8,10 +8,12 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "chromadb>=1.5.9",
+    "fastapi>=0.143.2",
     "pymupdf>=1.28.2",
     "rank-bm25>=0.2.2",
     "sentence-transformers>=6.1.0",
     "torch>=2.11.0",
+    "uvicorn>=0.54.0",
 ]
 
 [project.scripts]
@@ -19,6 +21,8 @@ rag-model = "rag_model:main"
 rag-ingest = "rag_model.ingest.build:main"
 rag-index = "rag_model.index.build:main"
 rag-search = "rag_model.index.search:main"
+rag-ask = "rag_model.answer:main"
+rag-serve = "rag_model.server:main"
 
 # CUDA build of PyTorch (the default PyPI wheel on Windows is CPU-only).
 [[tool.uv.index]]

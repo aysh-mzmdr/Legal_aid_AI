@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { streamChat } from '../../api/chat.js'
 import MessageBubble from '../MessageBubble/MessageBubble.jsx'
 import ChatInput from '../ChatInput/ChatInput.jsx'
 import Sidebar from '../Sidebar/Sidebar.jsx'
+import SourcePanel from '../SourcePanel/SourcePanel.jsx'
 import styles from './ChatPage.module.css'
 
 const SUGGESTIONS = [
@@ -25,10 +27,16 @@ const newConversation = () => ({
   messages: [GREETING],
 })
 
+// An answer still streaming when the page was closed can never finish: mark it.
+const settle = (m) =>
+  m.pending ? { ...m, pending: false, error: m.text ? m.error : 'This answer was interrupted.' } : m
+
 const loadConversations = () => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY))
-    if (Array.isArray(saved) && saved.length) return saved
+    if (Array.isArray(saved) && saved.length) {
+      return saved.map((c) => ({ ...c, messages: c.messages.map(settle) }))
+    }
   } catch {
     // ignore corrupt or unavailable storage
   }
@@ -40,7 +48,9 @@ export default function ChatPage() {
   const [activeId, setActiveId] = useState(() => conversations[0].id)
   const [loading, setLoading] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(() => !isMobile())
+  const [openSource, setOpenSource] = useState(null)
   const endRef = useRef(null)
+  const streams = useRef(new Set())
 
   const active = conversations.find((c) => c.id === activeId) ?? conversations[0]
   const messages = active.messages
@@ -57,6 +67,12 @@ export default function ChatPage() {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading, activeId])
 
+  // Stop any answer still streaming when the page goes away.
+  useEffect(() => {
+    const active = streams.current
+    return () => active.forEach((controller) => controller.abort())
+  }, [])
+
   const appendMessage = (id, message, title) => {
     setConversations((prev) =>
       prev.map((c) =>
@@ -65,21 +81,74 @@ export default function ChatPage() {
     )
   }
 
-  const handleSend = (text) => {
-    const id = active.id
+  const updateMessage = (convId, msgId, update) => {
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === convId ? { ...c, messages: c.messages.map((m) => (m.id === msgId ? { ...m, ...update(m) } : m)) } : c,
+      ),
+    )
+  }
+
+  const handleSend = async (text) => {
+    const convId = active.id
     const title = active.messages.length === 1 ? text.slice(0, 40) : undefined
-    appendMessage(id, { role: 'user', text }, title)
+    const msgId = crypto.randomUUID()
+    appendMessage(convId, { id: crypto.randomUUID(), role: 'user', text }, title)
+    appendMessage(convId, {
+      id: msgId,
+      role: 'assistant',
+      text: '',
+      status: 'searching',
+      sources: [],
+      cited: [],
+      followups: [],
+      pending: true,
+    })
     setLoading(true)
 
-    // TODO: replace with a real call to the AI backend.
-    setTimeout(() => {
-      appendMessage(id, {
-        role: 'assistant',
-        text: 'The AI backend is not connected yet. Your question has been received.',
+    const update = (fn) => updateMessage(convId, msgId, fn)
+    const controller = new AbortController()
+    streams.current.add(controller)
+    try {
+      await streamChat(text, {
+        signal: controller.signal,
+        onEvent: (event) => {
+          switch (event.type) {
+            case 'status':
+              update(() => ({ status: event.stage }))
+              break
+            case 'sources':
+              update(() => ({ sources: event.sources }))
+              break
+            case 'token':
+              update((m) => ({ text: m.text + event.text }))
+              break
+            case 'citations':
+              // The answer is complete; follow-up questions arrive a little later.
+              update(() => ({ cited: event.cited, pending: false }))
+              setLoading(false)
+              break
+            case 'followups':
+              update(() => ({ followups: event.questions }))
+              break
+            case 'error':
+              update(() => ({ error: event.message, pending: false }))
+              break
+            default:
+              break
+          }
+        },
       })
+    } catch (err) {
+      if (err.name !== 'AbortError') update(() => ({ error: err.message, pending: false }))
+    } finally {
+      streams.current.delete(controller)
+      update(() => ({ pending: false }))
       setLoading(false)
-    }, 900)
+    }
   }
+
+  const closeSource = useCallback(() => setOpenSource(null), [])
 
   const handleNew = () => {
     // Reuse an existing empty chat instead of piling up blanks.
@@ -151,9 +220,14 @@ export default function ChatPage() {
               )}
 
               {messages.map((m, i) => (
-                <MessageBubble key={i} role={m.role} text={m.text} />
+                <MessageBubble
+                  key={m.id ?? i}
+                  message={m}
+                  onOpenSource={setOpenSource}
+                  onFollowup={handleSend}
+                  showFollowups={i === messages.length - 1 && !loading}
+                />
               ))}
-              {loading && <MessageBubble role="assistant" text="Thinking..." />}
               <div ref={endRef} />
             </div>
           </div>
@@ -173,6 +247,8 @@ export default function ChatPage() {
           </div>
         </main>
       </div>
+
+      {openSource && <SourcePanel key={openSource.id} source={openSource} onClose={closeSource} />}
     </div>
   )
 }
