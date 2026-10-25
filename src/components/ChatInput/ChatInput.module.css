@@ -6,7 +6,12 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, border-radius 0.2s;
+}
+
+/* A pill's round ends would clip several lines of text. */
+.multiline {
+  border-radius: var(--radius-xl);
 }
 
 .wrap:focus-within {
@@ -16,7 +21,8 @@
 .input {
   flex: 1;
   min-height: 24px;
-  max-height: 120px;
+  max-height: 40vh;
+  overflow-y: auto;
   margin: 8px 0;
   padding: 0;
   resize: none;

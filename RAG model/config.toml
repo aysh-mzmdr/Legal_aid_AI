@@ -8,10 +8,10 @@
 # "gemini" (Google Gemini API), "ollama" (local), or "openai" (any OpenAI-compatible server:
 # llama.cpp server, LM Studio, vLLM).
 provider = "gemini"
-model = "gemini-3.8-flash"
+model = "gemini-3.5-flash-lite"
 # Tried in order when the model above stays busy or rate-limited after its retries
 # (Gemini returns 503 "high demand" at peak times). [] to disable.
-fallback_models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"]
+fallback_models = []
 base_url = "https://generativelanguage.googleapis.com/v1beta"
 # Name of the environment variable holding the API key. Put the key in that variable or in
 # a .env file (gitignored) in "RAG model" or the repository root, as  GEMINI_API_KEY=...
@@ -27,8 +27,8 @@ top_p = 0.9
 # turn thinking on.
 max_tokens = 1024
 # Hidden reasoning before answering: 0 = off, -1 = the model's default, N = up to N tokens.
-# Some models (e.g. Gemini Pro) cannot turn it off.
-thinking_budget = 0
+# Some models (e.g. Gemini Pro, gemini-3.5-flash-lite) cannot turn it off: 0 gets a 400 error.
+thinking_budget = -1
 timeout_seconds = 120
 # Retries per model, with 1 s / 2 s / 4 s waits, when the server is busy or rate-limiting
 # (429, 5xx), before moving to the next fallback model. Kept low because each busy model in the

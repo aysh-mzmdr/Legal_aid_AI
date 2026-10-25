@@ -22,8 +22,8 @@ import sys
 import time
 from typing import Iterator
 
-from .config import settings
-from .llm import LLMError, get_llm
+from ..config import settings
+from ..llm import LLMError, get_llm
 
 SYSTEM_PROMPT = """You help people in India understand their rights under the Constitution of India.
 
@@ -150,7 +150,7 @@ def main() -> None:
     if len(sys.argv) < 2:
         print('usage: rag-ask "your question"')
         return
-    from .index.search import HybridSearcher
+    from ..index.search import HybridSearcher
 
     question = " ".join(sys.argv[1:])
     cfg = settings()

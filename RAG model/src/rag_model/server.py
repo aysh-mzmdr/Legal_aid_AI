@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from .answer import ask, short_label
+from .prompt.answer import ask, short_label
 from .config import settings
 
 cfg = settings()

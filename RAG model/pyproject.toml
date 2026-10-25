@@ -22,7 +22,7 @@ rag-ingest = "rag_model.ingest.build:main"
 rag-index = "rag_model.index.build:main"
 rag-search = "rag_model.index.search:main"
 rag-ask = "rag_model.answer:main"
-rag-serve = "rag_model.server:main"
+rag-start = "rag_model.server:main"
 
 # CUDA build of PyTorch (the default PyPI wheel on Windows is CPU-only).
 [[tool.uv.index]]

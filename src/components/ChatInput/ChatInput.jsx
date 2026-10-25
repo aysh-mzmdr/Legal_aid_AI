@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import styles from './ChatInput.module.css'
 
 export default function ChatInput({ onSend, disabled }) {
   const [value, setValue] = useState('')
+  const [multiline, setMultiline] = useState(false)
+  const inputRef = useRef(null)
+
+  // Grow the textarea with its content (up to the CSS max-height) instead of scrolling.
+  useLayoutEffect(() => {
+    const el = inputRef.current
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+    setMultiline(el.scrollHeight > parseFloat(getComputedStyle(el).lineHeight) * 1.5)
+  }, [value])
 
   const submit = () => {
     const text = value.trim()
@@ -19,8 +29,9 @@ export default function ChatInput({ onSend, disabled }) {
   }
 
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${multiline ? styles.multiline : ''}`}>
       <textarea
+        ref={inputRef}
         className={styles.input}
         rows={1}
         value={value}
