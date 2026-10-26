@@ -70,3 +70,6 @@ port = 8000
 # Web app origins allowed to call the API (CORS): Vite's dev server by default.
 cors_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
 max_question_chars = 2000
+# Earlier messages of the chat sent with each question (the app sends its last 3 question/answer pairs).
+max_history_messages = 6
+max_history_chars = 4000

@@ -6,11 +6,27 @@ const STAGES = {
   answering: 'Writing the answer…',
 }
 
+const CITATION = /\[(\d+(?:\s*,\s*\d+)*)\]/g
+
+// The model cites passages by retrieval rank ("[4] ... [1] ... [4]"). Display them as 1, 2, 3
+// in order of first citation instead; a passage keeps its number every time it is cited.
+function citationOrder(text, sources) {
+  const order = new Map()
+  for (const m of text.matchAll(CITATION)) {
+    for (const n of m[1].split(',').map((x) => Number(x.trim()))) {
+      if (!order.has(n) && sources.some((s) => s.n === n)) order.set(n, order.size + 1)
+    }
+  }
+  return order
+}
+
 // message: { role, text, status?, sources?, cited?, followups?, error?, pending? }
 // Older saved messages only have role and text.
 export default function MessageBubble({ message, onOpenSource, onFollowup, showFollowups }) {
-  const { role, text = '', status, sources = [], cited = [], followups = [], error, pending } = message
+  const { role, text = '', status, sources: rawSources = [], cited = [], followups = [], error, pending } = message
   const isUser = role === 'user'
+  const order = citationOrder(text, rawSources)
+  const sources = rawSources.map((s) => ({ ...s, shown: order.get(s.n) }))
   const citedSources = cited.map((n) => sources.find((s) => s.n === n)).filter(Boolean)
 
   return (
@@ -51,7 +67,7 @@ export default function MessageBubble({ message, onOpenSource, onFollowup, showF
             <div className={styles.sourceList}>
               {citedSources.map((s) => (
                 <button key={s.n} type="button" className={styles.source} onClick={() => onOpenSource(s)} title={s.title}>
-                  <span className={styles.sourceNum}>{s.n}</span>
+                  <span className={styles.sourceNum}>{s.shown ?? s.n}</span>
                   {s.label}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M7 17L17 7M9 7h8v8" />

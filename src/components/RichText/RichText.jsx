@@ -28,9 +28,9 @@ function renderInline(text, citeProps, keyPrefix) {
               className={styles.cite}
               onClick={() => citeProps.onCite?.(source)}
               title={source.label}
-              aria-label={`Source ${n}: ${source.label}`}
+              aria-label={`Source ${source.shown ?? n}: ${source.label}`}
             >
-              {n}
+              {source.shown ?? n}
             </button>,
           )
         })

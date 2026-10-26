@@ -31,6 +31,28 @@ const newConversation = () => ({
 const settle = (m) =>
   m.pending ? { ...m, pending: false, error: m.text ? m.error : 'This answer was interrupted.' } : m
 
+const HISTORY_TURNS = 3 // question/answer pairs sent with each question (server allows 6 messages)
+const HISTORY_CHARS = 1500 // per past answer
+const CITATION = /\s*\[\d+(?:\s*,\s*\d+)*\]/g
+
+// The last few completed question/answer pairs of this chat, oldest first, so a follow-up
+// like "what about my lawyer?" or "what did you say?" keeps its context. Failed and
+// interrupted answers are skipped (refusals are kept: they are part of the conversation),
+// and [n] marks are removed: they pointed at that question's passages, not the next one's.
+const recentHistory = (messages) => {
+  const history = []
+  messages.forEach((q, i) => {
+    const a = messages[i + 1]
+    if (q.role !== 'user' || a?.role !== 'assistant') return
+    if (a.pending || a.error || !a.text?.trim()) return
+    history.push(
+      { role: 'user', text: q.text },
+      { role: 'assistant', text: a.text.replace(CITATION, '').trim().slice(0, HISTORY_CHARS) },
+    )
+  })
+  return history.slice(-HISTORY_TURNS * 2)
+}
+
 const loadConversations = () => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY))
@@ -92,6 +114,7 @@ export default function ChatPage() {
   const handleSend = async (text) => {
     const convId = active.id
     const title = active.messages.length === 1 ? text.slice(0, 40) : undefined
+    const history = recentHistory(active.messages)
     const msgId = crypto.randomUUID()
     appendMessage(convId, { id: crypto.randomUUID(), role: 'user', text }, title)
     appendMessage(convId, {
@@ -111,6 +134,7 @@ export default function ChatPage() {
     streams.current.add(controller)
     try {
       await streamChat(text, {
+        history,
         signal: controller.signal,
         onEvent: (event) => {
           switch (event.type) {

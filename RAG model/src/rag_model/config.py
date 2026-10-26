@@ -67,6 +67,8 @@ class ServerSettings:
     port: int = 8000
     cors_origins: list[str] = field(default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"])
     max_question_chars: int = 2000
+    max_history_messages: int = 6
+    max_history_chars: int = 4000
 
 
 @dataclass

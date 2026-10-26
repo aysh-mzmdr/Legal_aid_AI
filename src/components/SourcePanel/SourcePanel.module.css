@@ -11,9 +11,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: min(480px, 100%);
+  width: min(520px, 100%);
   height: 100%;
-  padding: 24px;
+  padding: 24px 24px 16px;
   overflow: hidden;
   background: var(--surface);
   border-left: 1px solid var(--border);
@@ -27,27 +27,21 @@
   background: radial-gradient(circle at 100% 0%, rgba(111, 184, 150, 0.08), transparent 55%);
 }
 
+/* Header: number tile, label + title, close */
+
 .head {
   position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.headText {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  min-width: 0;
+  gap: 14px;
 }
 
 .badge {
   flex: none;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   background: var(--accent-deep);
   color: var(--text);
@@ -55,11 +49,36 @@
   font-weight: 600;
 }
 
+.headText {
+  flex: 1;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.part {
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .title {
   margin: 4px 0 0;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
   color: var(--text);
 }
 
@@ -84,53 +103,188 @@
 
 .trail {
   position: relative;
-  margin: 12px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  margin: 14px 0 0 52px;
   font-size: 12px;
   color: var(--text-dim);
 }
 
-.body {
+.trail span + span::before {
+  content: '›';
+  margin: 0 8px;
+}
+
+/* Scrolling content: the law, then the notes */
+
+.scroll {
   position: relative;
   flex: 1;
+  min-height: 0;
   margin-top: 20px;
-  padding: 18px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.law {
+  padding: 20px 22px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--card);
 }
 
-.para {
-  margin: 0 0 12px;
+.line {
+  display: grid;
+  grid-template-columns: 2.6em 1fr;
+  padding-left: calc(var(--level) * 2.6em);
+  margin-bottom: 10px;
+}
+
+.line:last-child {
+  margin-bottom: 0;
+}
+
+.plain {
+  grid-template-columns: 1fr;
+}
+
+.marker {
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.75;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.lineText {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.75;
   color: var(--text);
   overflow-wrap: anywhere;
 }
 
-.para:last-child {
-  margin-bottom: 0;
+.noteRef {
+  display: inline-grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  margin: 0 1px 0 3px;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: super;
+  cursor: pointer;
+}
+
+.noteRef:hover,
+.noteRef:focus-visible {
+  border-color: var(--text-dim);
+  color: var(--text);
+  outline: none;
+}
+
+.notes {
+  padding: 4px 4px 8px;
+}
+
+.notesTitle {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.noteList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .note {
-  display: block;
-  margin: 6px 0;
-  padding-left: 10px;
-  border-left: 2px solid var(--border);
-  font-size: 12px;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.noteActive {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+.noteNum {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.noteText {
+  margin: 1px 0 0;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.noteDate {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
 }
 
 .muted {
   margin: 0;
   font-size: 14px;
+  line-height: 1.6;
   color: var(--text-muted);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton span {
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
 }
 
 .foot {
   position: relative;
   margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
   font-size: 12px;
   color: var(--text-dim);
 }
@@ -143,9 +297,28 @@
   .panel {
     width: 100%;
     height: 85%;
-    padding: 20px 16px;
+    padding: 20px 16px 12px;
     border-left: none;
     border-top: 1px solid var(--border);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .trail {
+    margin-left: 0;
+  }
+
+  .law {
+    padding: 16px;
+  }
+
+  .line {
+    grid-template-columns: 2.2em 1fr;
+    padding-left: calc(var(--level) * 1.4em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton span {
+    animation: none;
   }
 }

@@ -11,13 +11,14 @@ export class ChatError extends Error {
 
 // Streams an answer. The server sends one JSON event per line (see answer.py):
 // status, sources, token, citations, followups, done, error. onEvent gets each one.
-export async function streamChat(question, { onEvent, signal }) {
+// history: earlier messages of this chat, [{ role: 'user' | 'assistant', text }], oldest first.
+export async function streamChat(question, { history = [], onEvent, signal }) {
   let response
   try {
     response = await fetch(`${API_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ question, history }),
       signal,
     })
   } catch (err) {

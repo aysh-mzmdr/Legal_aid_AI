@@ -1,7 +1,7 @@
 """HTTP API for the web app: `uv run rag-serve`.
 
     GET  /api/health                 {"ready": bool, "error": str | None, "llm": {...}}
-    POST /api/chat {"question": ...}  streamed answer, one JSON event per line (see answer.py)
+    POST /api/chat {"question", "history"}  streamed answer, one JSON event per line (see answer.py)
     GET  /api/provisions/{id}        full text of a cited provision, for the source panel
 
 The search models take ~25 s to load. They load in the background at startup, so /api/health
@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import threading
 from contextlib import asynccontextmanager
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -57,8 +58,15 @@ app.add_middleware(
 )
 
 
+class HistoryMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    text: str = Field(max_length=cfg.server.max_history_chars)
+
+
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=cfg.server.max_question_chars)
+    # Earlier messages of this chat, oldest first, so follow-ups keep their context. Not stored.
+    history: list[HistoryMessage] = Field(default_factory=list, max_length=cfg.server.max_history_messages)
 
 
 def _searcher():
@@ -80,10 +88,11 @@ def health() -> dict:
 def chat(req: ChatRequest) -> StreamingResponse:
     searcher = _searcher()
     question = req.question.strip()
+    history = [m.model_dump() for m in req.history]
 
     def events():
         try:
-            for event in ask(question, searcher):
+            for event in ask(question, searcher, history=history):
                 yield json.dumps(event, ensure_ascii=False) + "\n"
         except Exception as e:  # anything unexpected still ends the stream with an error event
             yield json.dumps({"type": "error", "message": "Something went wrong while answering.",
