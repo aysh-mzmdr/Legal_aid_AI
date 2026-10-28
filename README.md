@@ -4,7 +4,9 @@ A chatbot that explains your rights under the **Constitution of India** in plain
 
 Ask "the police arrested my brother and won't say why" and it answers from Article 22, with a citation you can click to read the provision's full text, including its amendment history. If the Constitution doesn't answer a question (tenancy, divorce, filing an FIR), it says so instead of guessing.
 
-<!-- Demo GIF: docs/demo.gif -->
+![Start screen with suggested questions](docs/home.png)
+
+![An answer to "Police arrested my brother and won't say why", citing Article 22, with a source button and suggested follow-up questions](docs/answer.png)
 
 ## Highlights
 
