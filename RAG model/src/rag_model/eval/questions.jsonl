@@ -1,0 +1,100 @@
+{"q": "Police arrested me and won't tell me why", "gold": ["22"], "type": "everyday"}
+{"q": "The police kept my brother locked up for three days without taking him to a judge", "gold": ["22"], "type": "everyday"}
+{"q": "Can I talk to a lawyer after I've been arrested?", "gold": ["22"], "type": "everyday"}
+{"q": "Can the government take my land without paying me?", "gold": ["300A"], "type": "everyday"}
+{"q": "Is it free to send my 8 year old to school?", "gold": ["21A"], "type": "everyday"}
+{"q": "A government-funded college refused my son admission because of our religion", "gold": ["29", "15"], "type": "everyday"}
+{"q": "Can I be punished for something that wasn't a crime when I did it?", "gold": ["20"], "type": "everyday"}
+{"q": "Can the police force me to confess or give evidence against myself?", "gold": ["20"], "type": "everyday"}
+{"q": "I was already punished for a theft, can they put me on trial for it again?", "gold": ["20"], "type": "everyday"}
+{"q": "Can a public restaurant refuse to let me in because of my caste?", "gold": ["15", "17"], "type": "everyday"}
+{"q": "I was rejected for a government job because I am a woman", "gold": ["16"], "type": "everyday"}
+{"q": "People in my village won't let us use the well because we are Dalits", "gold": ["17", "15"], "type": "everyday"}
+{"q": "My employer makes me work without wages to pay off a loan", "gold": ["23"], "type": "everyday"}
+{"q": "Can a 12 year old be made to work in a factory?", "gold": ["24"], "type": "everyday"}
+{"q": "Can I be jailed for criticising the government online?", "gold": ["19"], "type": "everyday"}
+{"q": "Can the police stop a peaceful protest?", "gold": ["19"], "type": "everyday"}
+{"q": "Can I move to another state and settle there?", "gold": ["19"], "type": "everyday"}
+{"q": "Am I allowed to change my religion?", "gold": ["25"], "type": "everyday"}
+{"q": "Can our community start and run its own school?", "gold": ["30"], "type": "everyday"}
+{"q": "Can I go straight to the Supreme Court if my fundamental rights are violated?", "gold": ["32"], "type": "everyday"}
+{"q": "A government officer violated my rights, which court can I go to?", "gold": ["32", "226"], "type": "everyday"}
+{"q": "I can't afford a lawyer, will the government help me?", "gold": ["39A"], "type": "everyday"}
+{"q": "Can the state take away my life or freedom whenever it wants?", "gold": ["21"], "type": "everyday"}
+{"q": "I just turned 18, can I vote?", "gold": ["326"], "type": "everyday"}
+{"q": "If I become a citizen of another country, am I still an Indian citizen?", "gold": ["9"], "type": "everyday"}
+{"q": "Can the President forgive someone sentenced to death?", "gold": ["72"], "type": "everyday"}
+{"q": "Can an MP lose their seat for switching parties?", "gold": ["102", "191", "Schedule 10"], "type": "everyday"}
+{"q": "Who can become a Supreme Court judge?", "gold": ["124"], "type": "everyday"}
+{"q": "Can the government declare an emergency for the whole country?", "gold": ["352"], "type": "everyday"}
+{"q": "Do I lose my basic rights during an emergency?", "gold": ["358", "359"], "type": "everyday"}
+{"q": "Can the government keep some jobs only for backward classes?", "gold": ["16"], "type": "everyday"}
+{"q": "Are some panchayat seats kept for women?", "gold": ["243D"], "type": "everyday"}
+{"q": "Can my child be taught in our mother tongue in primary school?", "gold": ["350A"], "type": "everyday"}
+{"q": "What duties do I have as a citizen?", "gold": ["51A"], "type": "everyday"}
+{"q": "Should men and women get the same pay for the same work?", "gold": ["39"], "type": "everyday"}
+{"q": "Can I be fired from a government job without being heard?", "gold": ["311"], "type": "everyday"}
+{"q": "Can the government charge a new tax without passing a law?", "gold": ["265"], "type": "everyday"}
+{"q": "Does the state have to provide maternity relief to working women?", "gold": ["42"], "type": "everyday"}
+{"q": "Does the Constitution say anything about protecting cows?", "gold": ["48"], "type": "everyday"}
+{"q": "Is the government supposed to protect forests and wildlife?", "gold": ["48A", "51A"], "type": "everyday"}
+{"q": "Can the government give someone a title like 'Sir'?", "gold": ["18"], "type": "everyday"}
+{"q": "Can I write a complaint to a government office in my own language?", "gold": ["350"], "type": "everyday"}
+{"q": "Can a religious group manage its own temple?", "gold": ["26"], "type": "everyday"}
+{"q": "Can I be made to pay a tax that funds a particular religion?", "gold": ["27"], "type": "everyday"}
+{"q": "Can a government school teach religion to students?", "gold": ["28"], "type": "everyday"}
+{"q": "Does India have to make one civil law for all religions?", "gold": ["44"], "type": "everyday"}
+{"q": "Is the government supposed to ban alcohol?", "gold": ["47"], "type": "everyday"}
+{"q": "Does equality before law apply to foreigners living in India?", "gold": ["14"], "type": "everyday"}
+{"q": "Protection of an accused person against double jeopardy and self-incrimination", "gold": ["20"], "type": "legal"}
+{"q": "Power of High Courts to issue writs of habeas corpus and mandamus", "gold": ["226"], "type": "legal"}
+{"q": "Equality of opportunity in matters of public employment", "gold": ["16"], "type": "legal"}
+{"q": "Prohibition of traffic in human beings and begar", "gold": ["23"], "type": "legal"}
+{"q": "Deprivation of property save by authority of law", "gold": ["300A"], "type": "legal"}
+{"q": "Free legal aid and equal justice for economically disadvantaged persons", "gold": ["39A"], "type": "legal"}
+{"q": "Suspension of the enforcement of fundamental rights during a Proclamation of Emergency", "gold": ["359", "358"], "type": "legal"}
+{"q": "What does Article 21A say?", "gold": ["21A"], "type": "named"}
+{"q": "Explain Article 14", "gold": ["14"], "type": "named"}
+{"q": "What is Article 300A about?", "gold": ["300A"], "type": "named"}
+{"q": "What does Article 370 say?", "gold": ["370"], "type": "named"}
+{"q": "Tell me about article 32", "gold": ["32"], "type": "named"}
+{"q": "Is Article 17 still in force?", "gold": ["17"], "type": "named"}
+{"q": "My landlord won't return my security deposit", "gold": [], "type": "out_of_scope"}
+{"q": "How do I file an FIR at a police station?", "gold": [], "type": "out_of_scope"}
+{"q": "What is the fine for drunk driving?", "gold": [], "type": "out_of_scope"}
+{"q": "How do I file a consumer complaint about a defective phone?", "gold": [], "type": "out_of_scope"}
+{"q": "How do I get a divorce?", "gold": [], "type": "out_of_scope"}
+{"q": "How much income tax do I pay on my salary?", "gold": [], "type": "out_of_scope"}
+{"q": "Mereko Article 22 ke barein mein janna hai?", "gold": ["22"], "type": "hinglish named"}
+{"q": "Kya court national holidays mein proceedings karte hai?", "gold": [], "type": "hinglish out_of_scope"}
+{"q": "Habeas Corpus kya hota hai?", "gold": ["32", "226"], "type": "hinglish legal"}
+{"q": "Kya hindi India ki national langauge hai?", "gold": ["343", "351"], "type": "hinglish everyday"}
+{"q": "Explain the rights and power of India over Jammu and Kashmir wrt Administration", "gold": ["370", "Appendix 2", "Appendix 3", "Schedule 1"], "type": "broad"}
+{"q": "If India captures some foreign land, how will it be decided whether its a State or a Union Terrirtory?", "gold": ["1", "2"], "type": "hypothetical"}
+{"q": "If an Indian State becomes an Independent country, what provisions are already mentioned about such a case in the Contitution of India?", "gold": ["1", "3", "4"], "type": "hypothetical"}
+{"q": "Can an Indian legally kill another person?", "gold": ["21"], "type": "hypothetical"}
+{"q": "What happens when a foreigner kills another foreigner in Indian Soil?", "gold": [], "type": "out_of_scope"}
+{"q": "Who cannot become the Prime Minister of India?", "gold": ["75", "84", "102"], "type": "everyday"}
+{"q": "Who cannot become the President of India?", "gold": ["58", "59"], "type": "everyday"}
+{"q": "Can the President of India, run for election for Prime Minister, before or after his tenure as President?", "gold": ["59", "75"], "type": "hypothetical"}
+{"q": "Can India have the same person as Prime Minister and President at the same time?", "gold": ["59", "75"], "type": "hypothetical"}
+{"q": "Under what circumstances can India use nuclear weapons?", "gold": [], "type": "out_of_scope"}
+{"q": "Can India work and research on modern destructive weapons, like nuclear bomb?", "gold": ["Schedule 7", "246"], "type": "hypothetical"}
+{"q": "What happens if the Prime Minister, the deputy Prime Minister, President, Vice President, the Speaker, the deputy Speaker, dies together? Who runs the country now?", "gold": ["70", "65", "62"], "type": "hypothetical"}
+{"q": "What happens if India falls into a civil war?", "gold": ["352", "355", "356"], "type": "hypothetical"}
+{"q": "Can the Prime Minister, or the President, reject the order of the Supreme Court?", "gold": ["141", "142", "144"], "type": "everyday"}
+{"q": "Why can't education be free in India?", "gold": ["21A", "45"], "type": "everyday"}
+{"q": "State the Preamble of the Indian Constitution", "gold": ["Preamble"], "type": "named"}
+{"q": "What limitations of power does the finance minister have, wrt finance?", "gold": ["265", "266", "112", "114", "110"], "type": "broad"}
+{"q": "Can a non-human, be a minister of a ruling party?", "gold": ["75", "84"], "type": "hypothetical"}
+{"q": "Can a member of the opposition, be a minister in the cabinet of the current ruling government?", "gold": ["75"], "type": "hypothetical"}
+{"q": "Whats the anti-defection law?", "gold": ["Schedule 10", "102", "191"], "type": "legal"}
+{"q": "Under what grounds can the Prime Minister, or the President, personally execute a person?", "gold": ["21", "72"], "type": "hypothetical"}
+{"q": "What provisions are made in the Indian Constitution, for transgenders", "gold": ["14", "15", "21"], "type": "everyday"}
+{"q": "Can a Foreigner be a minister of the ruling cabinet?", "gold": ["75", "84"], "type": "everyday"}
+{"q": "Under what provisions, can the police use his gun?", "gold": [], "type": "out_of_scope"}
+{"q": "Police ne mere bhai ko peet diya bewajah. Hum kya kare?", "gold": ["21", "32", "226"], "type": "hinglish everyday"}
+{"q": "Mai financially bancrupt ho chuka hu. Kuch provision hai jisse meri madat ho sake?", "gold": ["41", "38"], "type": "hinglish everyday"}
+{"q": "I am a 30 years old male, who is being falsely accussed in a rape case.", "gold": ["20", "21", "22"], "type": "everyday"}
+{"q": "Agar USA mereko India wapas aane ke roke, kya India meri madat karega wapas aane mein?", "gold": [], "type": "hinglish out_of_scope"}
+{"q": "I got rammed over by Prime Minister's car. Can I have justice?", "gold": ["14", "361", "300"], "type": "everyday"}

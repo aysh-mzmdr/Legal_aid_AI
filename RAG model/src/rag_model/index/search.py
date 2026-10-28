@@ -75,14 +75,24 @@ class HybridSearcher:
         return self.model.encode([query], prompt=QUERY_PROMPT, normalize_embeddings=True,
                                  convert_to_numpy=True)[0].astype(np.float32)
 
-    def search(self, query: str, k: int = 10, pool: int = 30) -> tuple[list[Hit], np.ndarray]:
-        q = self.embed_query(query)
+    def dense_ranked(self, q: np.ndarray, pool: int = 30) -> list[tuple[str, float]]:
+        """(chunk id, cosine similarity), best first, for an embedded query."""
         dense = self.collection.query(query_embeddings=[q.tolist()], n_results=pool, include=["distances"])
-        dense_ranked = [(cid, 1 - d) for cid, d in zip(dense["ids"][0], dense["distances"][0])]
+        return [(cid, 1 - d) for cid, d in zip(dense["ids"][0], dense["distances"][0])]
 
+    def sparse_ranked(self, query: str, pool: int = 30) -> list[tuple[str, float]]:
+        """(chunk id, BM25 score), best first; chunks sharing no term with the query are left out."""
         scores = self.bm25.get_scores(tokenize(query))
         top = np.argsort(-scores)[:pool]
-        sparse_ranked = [(self.bm25_ids[i], float(scores[i])) for i in top if scores[i] > 0]
+        return [(self.bm25_ids[i], float(scores[i])) for i in top if scores[i] > 0]
+
+    def search(self, query: str, k: int = 10, pool: int = 30,
+               named: bool = True) -> tuple[list[Hit], np.ndarray]:
+        """Fused hits; `named=False` turns off putting an Article named in the query first
+        (only the retrieval evaluation does that)."""
+        q = self.embed_query(query)
+        dense_ranked = self.dense_ranked(q, pool)
+        sparse_ranked = self.sparse_ranked(query, pool)
 
         hits: dict[str, Hit] = {}
         for rank, (cid, sim) in enumerate(dense_ranked):
@@ -95,7 +105,7 @@ class HybridSearcher:
             h.bm25 = s
         # "Article 21A" in the question: that Article goes to the top, scored as if it had
         # ranked first in both lists (so the other results keep a usable relative score).
-        for m in ARTICLE_REF.finditer(query):
+        for m in ARTICLE_REF.finditer(query) if named else ():
             for cid in self.by_article.get(m.group(1).replace("-", "").upper(), []):
                 h = hits.setdefault(cid, Hit(cid, 0.0))
                 h.score += 2 / (RRF_K + 1)

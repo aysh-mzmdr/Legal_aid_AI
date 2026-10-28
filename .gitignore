@@ -23,7 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-Raw Data
+**/Raw Data/*
+!**/Raw Data/Constitution_of_India.pdf
 CLAUDE.md
 .venv
 abc.txt
